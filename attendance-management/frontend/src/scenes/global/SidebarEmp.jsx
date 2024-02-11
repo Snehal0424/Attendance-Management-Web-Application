@@ -80,7 +80,7 @@ const Sidebar = () => {
                 ml="15px"
               >
                 <Typography variant="h3" color={colors.grey[100]}>
-                  ADMINI
+                  EMPLOYEE
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
@@ -110,7 +110,7 @@ const Sidebar = () => {
                   Anjali Nikhate
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                  DAC Admin
+                  Graduate Engineer Trainee
                 </Typography>
               </Box>
             </Box>
@@ -133,23 +133,9 @@ const Sidebar = () => {
               Data
             </Typography>
             <Item
-              title="Manage Team"
-              to="/adminDashboard/team"
-              icon={<PeopleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Contacts Information"
-              to="/adminDashboard/contacts"
+              title="Personal Information"
+              to="/employeeDashboard/personalInfo"
               icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Mark Attendance"
-              to="/adminDashboard/invoices"
-              icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -162,22 +148,22 @@ const Sidebar = () => {
               Pages
             </Typography>
             <Item
-              title="Profile Form"
-              to="/adminDashboard/form"
+              title="Edit Form"
+              to="/employeeDashboard/formEmp"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Calendar"
-              to="/adminDashboard/calendar"
+              to="/employeeDashboard/calendarEmp"
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="FAQ Page"
-              to="/adminDashboard/faq"
+              to="/employeeDashboard/faqEmp"
               icon={<HelpOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -192,28 +178,28 @@ const Sidebar = () => {
             </Typography>
             <Item
               title="Bar Chart"
-              to="/adminDashboard/bar"
+              to="/employeeDashboard/barEmp"
               icon={<BarChartOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Pie Chart"
-              to="/adminDashboard/pie"
+              to="/employeeDashboard/pieEmp"
               icon={<PieChartOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Line Chart"
-              to="/adminDashboard/line"
+              to="/employeeDashboard/lineEmp"
               icon={<TimelineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Geography Chart"
-              to="/adminDashboard/geography"
+              to="/employeeDashboard/geographyEmp"
               icon={<MapOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

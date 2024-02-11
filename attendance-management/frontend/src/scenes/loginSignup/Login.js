@@ -27,9 +27,9 @@ function Login() {
         .then(res => {
             if(res.data.success){
               if(res.data.role === "admin"){
-                navigate('/dashboard');
+                navigate('/adminDashboard');
               }else if(res.data.role === "employee"){
-                navigate('/home');
+                navigate('/employeeDashboard');
               }else{
                 alert("Invalid role");
               }

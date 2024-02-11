@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Login from "./scenes/loginSignup/Login";
 import Signup from "./scenes/loginSignup/Signup";
-// import { Login, Signup } from "./scenes/loginSignup";
-import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
+import SidebarEmp from "./scenes/global/SidebarEmp";
+import Topbar from "./scenes/global/Topbar";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Invoices from "./scenes/invoices";
-import Contacts from "./scenes/contacts";
+import Contacts from "./scenes/contacts/index";
 import Bar from "./scenes/bar";
 import Form from "./scenes/form";
 import Line from "./scenes/line";
@@ -18,42 +18,91 @@ import Geography from "./scenes/geography";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
-import Home from "./scenes/dashboard/Home";
+import Employee from "./scenes/dashboard/indexEmp";
+import PersonalInfo from "./scenes/contacts/personalInfo";
+import FormEmp from "./scenes/form/formEmp";
+import CalendarEmp from "./scenes/calendar/calendarEmp";
+import FaqEmp from "./scenes/faq/faqEmp";
+import BarEmp from "./scenes/bar/barEmp";
+import PieEmp from "./scenes/pie/pieEmp";
+import LineEmp from "./scenes/line/lineEmp";
+import GeographyEmp from "./scenes/geography/geographyEmp";
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
-
   const navigate = useNavigate();
   const currentPath = window.location.pathname;
 
-  const shouldDisplaySidebarAndTopbar = currentPath !== '/' && currentPath !== '/signup';
+  // Assume user role is determined based on authentication or other logic
+  const userRole = getCurrentUserRole();
+
+  // Function to determine the user role based on the current path or authentication
+  function getCurrentUserRole() {
+    // Implement your logic to determine the user role
+    // For example, you can check the current path or use authentication data
+    if (currentPath.includes("/adminDashboard")) {
+      return "admin";
+    } else if (currentPath.includes("/employeeDashboard")) {
+      return "employee";
+    } else {
+      // Default role or unauthenticated state
+      return "guest";
+    }
+  }
+
+  const shouldDisplaySidebarAndTopbar =
+    currentPath !== "/" && currentPath !== "/signup";
 
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="app">
-          {/* <Sidebar isSidebar={isSidebar} /> */}
-          {shouldDisplaySidebarAndTopbar && <Sidebar isSidebar={isSidebar} />}
+          {shouldDisplaySidebarAndTopbar && (
+            // Render AdminSidebar or EmployeeSidebar based on user role
+            userRole === "admin" ? <Sidebar isSidebar={isSidebar} /> : <SidebarEmp isSidebar={isSidebar} />
+          )}
           <main className="content">
-            {/* <Topbar setIsSidebar={setIsSidebar} /> */}
             {shouldDisplaySidebarAndTopbar && <Topbar setIsSidebar={setIsSidebar} />}
             <Routes>
-              <Route path='/' element={<Login />}> </Route>
-              <Route path='/signup' element={<Signup />}> </Route>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/team" element={<Team />} />
-              <Route path="/contacts" element={<Contacts />} />
-              <Route path="/invoices" element={<Invoices />} />
-              <Route path="/form" element={<Form />} />
-              <Route path="/bar" element={<Bar />} />
-              <Route path="/pie" element={<Pie />} />
-              <Route path="/line" element={<Line />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/calendar" element={<Calendar />} />
-              <Route path="/geography" element={<Geography />} />
+              <Route path="/" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              {/* Assume the admin and employee routes */}
+              <Route path="/adminDashboard" element={<Dashboard />} />
+              {/* {userRole === "admin" && (
+                <>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/contacts" element={<Contacts />} />
+                </>
+              )}
+              {userRole === "employee" && (
+                <>
+                  <Route path="/employeeDashboard" element={<Employee />} />
+                  <Route path="/personalInfo" element={<PersonalInfo />} />
+                </>
+              )} */}
+              <Route path="/adminDashboard/team" element={<Team />} />
+              <Route path="/adminDashboard/contacts" element={<Contacts />} />
+              <Route path="/adminDashboard/invoices" element={<Invoices />} />
+              <Route path="/adminDashboard/form" element={<Form />} />
+              <Route path="/adminDashboard/bar" element={<Bar />} />
+              <Route path="/adminDashboard/pie" element={<Pie />} />
+              <Route path="/adminDashboard/line" element={<Line />} />
+              <Route path="/adminDashboard/faq" element={<FAQ />} />
+              <Route path="/adminDashboard/calendar" element={<Calendar />} />
+              <Route path="/adminDashboard/geography" element={<Geography />} />
+              {/* Employee routes */}
+              <Route path="/employeeDashboard" element={<Employee />} />
+              <Route path="/employeeDashboard/personalInfo" element={<PersonalInfo />} />
+              <Route path="/employeeDashboard/formEmp" element={<FormEmp />} />
+              <Route path="/employeeDashboard/calendarEmp" element={<CalendarEmp />} />
+              <Route path="/employeeDashboard/faqEmp" element={<FaqEmp />} />
+              <Route path="/employeeDashboard/barEmp" element={<BarEmp />} />
+              <Route path="/employeeDashboard/pieEmp" element={<PieEmp />} />
+              <Route path="/employeeDashboard/lineEmp" element={<LineEmp />} />
+              <Route path="/employeeDashboard/geographyEmp" element={<GeographyEmp />} />
+              {/* Add more employee-specific routes as needed */}
             </Routes>
           </main>
         </div>
