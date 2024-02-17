@@ -8,12 +8,33 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
+import axios from "axios";
+import { useNavigate} from 'react-router-dom';
+
 
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  //for session
+  const navigate = useNavigate();
+  
 
+  const handleLogout = () =>{
+    
+      axios.get('http://localhost:8081/logout')
+      .then(res => {
+
+        //Navigate to login page after successful logout
+        navigate('/');
+
+        document.cookie = 'connect.sid= ; expires = Thu, 01 Jan 1970 00:00:00 GMT; path=/adminDashboard; domain=localhost; Secure';
+        // Reload the page to ensure session is properly cleared
+        window.location.reload();
+      })
+      .catch(err => console.log(err))
+    
+  }
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
       {/* SEARCH BAR */}
@@ -43,7 +64,7 @@ const Topbar = () => {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton>
+        <IconButton onClick={handleLogout}>
           <PersonOutlinedIcon />
         </IconButton>
       </Box>
