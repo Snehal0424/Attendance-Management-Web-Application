@@ -1,27 +1,84 @@
-import { Box, Typography, useTheme, Checkbox } from "@mui/material";
+import { Box, useTheme, Checkbox } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataInvoices } from "../../data/mockData";
 import Header from "../../components/Header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from 'axios'; 
+
+// const AttendanceColumn = ({ row, onCheckboxChange }) => {
+//   const [checked, setChecked] = useState(row.present || false);
+
+//   const handleChange = (event) => {
+//     setChecked(event.target.checked);
+//     onCheckboxChange(row.id, event.target.checked);
+
+//     // Call the API endpoint to update attendance status when checkbox is changed
+//     // updateAttendance(row.id, event.target.checked);
+//   };
 
 const AttendanceColumn = ({ row, onCheckboxChange }) => {
   const [checked, setChecked] = useState(row.present || false);
 
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-    onCheckboxChange(row.id, event.target.checked);
+  const handleChange = () => {
+    setChecked(!checked);
+    onCheckboxChange(row.id, !checked);
+
+    // Call the API endpoint to update attendance status when checkbox is changed
+    // updateAttendance(row.id, event.target.checked);
   };
 
+  // const updateAttendance = (id, present) => {
+  //   axios.post('/api/updateAttendance', { id, present })
+  //     .then(response => {
+  //       console.log('Attendance updated successfully:', response.data);
+  //     })
+  //     .catch(error => {
+  //       console.error('Error updating attendance:', error);
+  //     });
+  // };
+
   // Render checkbox only if the employee is absent
-  return !row.present ? (
-    <Checkbox checked={checked} onChange={handleChange} />
-  ) : null;
+  // return !row.present ? (
+  //   <Checkbox checked={checked} onChange={handleChange} />
+  // ) : null;
+
+  return (
+    <input type="checkbox" checked={checked} onChange={handleChange} />
+  );
 };
 
 const Invoices = () => {
   const theme = useTheme();
+  const [invoices, setInvoices] = useState([]);
   const colors = tokens(theme.palette.mode);
+  // const colors = theme.palette.mode === 'dark' ? theme.palette.primary : theme.palette.secondary;
+
+  useEffect(() => {
+    // Fetch attendance data from the backend when the component mounts
+    axios.get('http://localhost:8081/api/attendance')
+      .then(response => {
+        setInvoices(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching attendance data:', error);
+      });
+  }, []);
+
+  const handleAttendanceChange = (id, present) => {
+    // Send request to update attendance status to the backend
+    axios.post('/api/updateAttendance', { id, present})
+      .then(response => {
+        console.log('Attendance updated successfully:', response.data);
+        // Update the local state if needed
+        const updatedInvoices = invoices.map(invoice =>
+          invoice.id === id ? { ...invoice, present } : invoice
+        );
+        setInvoices(updatedInvoices);
+      })
+      .catch(error => {
+        console.error('Error updating attendance:', error);
+      });
+  };
 
   const columns = [
     { field: "id", headerName: "ID" },
@@ -30,11 +87,6 @@ const Invoices = () => {
       headerName: "Name",
       flex: 1,
       cellClassName: "name-column--cell",
-    },
-    {
-      field: "phone",
-      headerName: "Phone Number",
-      flex: 1,
     },
     {
       field: "email",
@@ -59,21 +111,21 @@ const Invoices = () => {
     },
   ];
 
-  const handleAttendanceChange = (id, value) => {
-    // Update the 'present' field in your data based on the checkbox changes
-    const updatedData = mockDataInvoices.map((item) =>
-      item.id === id ? { ...item, present: value } : item
-    );
-    // You might want to use a state or some other method to manage your data changes.
-    // For now, let's assume you have a function to update your data.
-    updateData(updatedData);
-  };
+  // const handleAttendanceChange = (id, value) => {
+  //   // Update the 'present' field in your data based on the checkbox changes
+  //   //const updatedData = mockDataInvoices.map((item) =>
+  //     //item.id === id ? { ...item, present: value } : item
+  //   //);
+  //   // You might want to use a state or some other method to manage your data changes.
+  //   // For now, let's assume you have a function to update your data.
+  //   //updateData(updatedData);
+  // };
 
-  const updateData = (updatedData) => {
-    // Replace this function with your own logic to update the data
-    // For example, if you are using state, you can use a state update function.
-    console.log("Updated Data:", updatedData);
-  };
+  // const updateData = (updatedData) => {
+  //   // Replace this function with your own logic to update the data
+  //   // For example, if you are using state, you can use a state update function.
+  //   console.log("Updated Data:", updatedData);
+  // };
 
   return (
     <Box m="20px">
@@ -109,9 +161,10 @@ const Invoices = () => {
       >
         <DataGrid
           checkboxSelection
-          rows={mockDataInvoices}
+          rows={invoices}
           columns={columns}
-          isCellEditable={(params) => params.field === "attendance" && !params.row.present}
+          isCellEditable={() => true}
+          //isCellEditable={(params) => params.field === "attendance" && !params.row.present}
         />
       </Box>
     </Box>
