@@ -13,11 +13,50 @@ import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import axios from 'axios';
+// import { useEffect } from "react";
+// import { useNavigate } from "react-router-dom";
 
+// FOR MARK-ATTENDANCE
+const markAttendance = (userData) => {
+  const data = {
+      login_id: 1, // Assuming you have the login ID available
+      name: 'John Doe', // Get the name from the logged-in user or elsewhere
+      email: 'john@example.com', // Get the email from the logged-in user or elsewhere
+  };
+
+  axios.post('http://localhost:8081/api/mark-attendance', data)
+      .then(response => {
+          console.log(response.data); // Handle success response
+          alert('Attendance marked successfully');
+      })
+      .catch(error => {
+          console.error('Error marking attendance:', error); // Handle error
+          alert('Failed to mark attendance');
+      });
+};
 
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  //session
+  // const [role,setRole] = useState('');
+  // const navigate = useNavigate()
+
+  // axios.defaults.withCredentials = true;
+  // useEffect(() => {
+  //   axios.get('http://localhost:8081/adminDashboard')
+  //   .then(res => {
+  //     if(res.data.valid){
+  //       setRole(res.data.role)
+  //     }
+  //     else{
+  //       navigate('/')
+  //     }
+  //   })
+  //   .catch(err => console.log(err))
+  // }, [])
 
   return (
     <Box m="20px">
@@ -26,7 +65,7 @@ const Dashboard = () => {
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
 
         <Box>
-          <Button
+          <Button onClick={markAttendance}
             sx={{
               backgroundColor: colors.blueAccent[700],
               color: colors.grey[100],
