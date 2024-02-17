@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Login from "./scenes/loginSignup/Login";
 import Signup from "./scenes/loginSignup/Signup";
 import Sidebar from "./scenes/global/Sidebar";
@@ -27,6 +28,8 @@ import BarEmp from "./scenes/bar/barEmp";
 import PieEmp from "./scenes/pie/pieEmp";
 import LineEmp from "./scenes/line/lineEmp";
 import GeographyEmp from "./scenes/geography/geographyEmp";
+import SessionNavigation from "./scenes/dashboard/SessionNavigation";
+// import Protected from "./scenes/ProtectedRoute/Protected";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -69,7 +72,18 @@ function App() {
               <Route path="/" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               {/* Assume the admin and employee routes */}
-              <Route path="/adminDashboard" element={<Dashboard />} />
+              <Route path="/adminDashboard" element={<Dashboard /> } />
+
+              <Route path="/session" element={<SessionNavigation /> } />
+                
+
+              {/* BELOW CODE FOR PROTECTED ROUTE */}
+              {/* <Route path="/adminDashboard" element={<SessionNavigation Component={Dashboard} />} />  */}
+
+              
+              {/* <Route path="/adminDashboard" element={<Protected Component={Dashboard} />} /> */}
+
+
               {/* {userRole === "admin" && (
                 <>
                   <Route path="/dashboard" element={<Dashboard />} />
@@ -103,9 +117,12 @@ function App() {
               <Route path="/employeeDashboard/lineEmp" element={<LineEmp />} />
               <Route path="/employeeDashboard/geographyEmp" element={<GeographyEmp />} />
               {/* Add more employee-specific routes as needed */}
+              
+              {/* AdminRouteGuard to restrict direct navigation to adminDashboard */}
+              
             </Routes>
           </main>
-        </div>
+          </div>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
