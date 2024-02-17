@@ -4,6 +4,7 @@ import Validation from './LoginValidation'
 import { Link} from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useEffect } from 'react'
 
 
 function Login() {
@@ -15,31 +16,122 @@ function Login() {
 
   const navigate = useNavigate();
   const [errors, setErrors] = useState({})
+  
     const handleInput = (event) =>{
         setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
     }
-  const handleSubmit=(event) => {
+
+  //session
+  axios.defaults.withCredentials = true;
+  useEffect(() => {
+    axios.get('http://localhost:8081/session')
+    .then(res => {
+      if(res.data.valid){
+        navigate('/session');
+      }
+      else{
+        navigate('/');
+      }
+     
+    })
+    .catch(err =>{
+       //console.log(err)
+       
+        // Handle the error here
+        console.error('Error checking session:', err);
+        // For example, set an error state
+        setErrors({ sessionCheck: 'Error checking session' });
+      })
+  }, [])
+
+  
+  //SESSION
+  // useEffect(() => {
+  //   axios.get('http://localhost:8081/session')
+  //     .then(res => {
+  //       if (res.data.valid) {
+  //         if (res.data.role === "admin") {
+  //           navigate('/adminDashboard');
+  //         } else if (res.data.role === "employee") {
+  //           navigate('/employeeDashboard');
+  //         }
+  //       }else{
+  //               navigate('/')
+  //       }
+  //     })
+  //     .catch(err => console.log(err));
+  // }, [navigate]);
+
+  // const handleInput = (event) => {
+  //   setValues(prev => ({ ...prev, [event.target.name]: event.target.value }));
+  // }
+  
+  const handleSubmit= async (event) => {
     event.preventDefault();
     setErrors(Validation(values));
 
-    if( errors.email === "" && errors.password === "" ){
-        axios.post('http://localhost:8081/login', values)
-        .then(res => {
-            if(res.data.success){
-              if(res.data.role === "admin"){
-                navigate('/adminDashboard');
-              }else if(res.data.role === "employee"){
-                navigate('/employeeDashboard');
-              }else{
-                alert("Invalid role");
+  //   if( errors.email === "" && errors.password === "" ){
+  //     axios.post('http://localhost:8081/login', values)
+  //     .then(res => {
+  //         if(res.data.success){
+  //           if(res.data.role === "admin"){
+  //             navigate('/adminDashboard');
+  //           }else if(res.data.role === "employee"){
+  //             navigate('/employeeDashboard');
+  //           }else{
+  //              alert("No record");
+
+  //           }
+  //         }
+  //         else {
+  //           alert("No record existed");
+  //         }
+  //     })
+  //     .catch(err => console.log(err))
+  //   }
+  //  };
+
+    // if( errors.email === "" && errors.password === "" ){
+    //     axios.post('http://localhost:8081/login', values)
+    //     .then(res => {
+    //         if(res.data.success){
+    //           if(res.data.role === "admin"){
+    //             navigate('/adminDashboard');
+    //           }else if(res.data.role === "employee"){
+    //             navigate('/employeeDashboard');
+    //           }else{
+    //              alert("No record");
+
+    //           }
+    //         }
+    //         else {
+    //           alert("No record existed");
+    //         }
+    //     })
+    //     .catch(err => console.log(err))
+    // }
+
+    //SESSION for storage of loginId and role
+    
+      try {
+          const response = await axios.post('http://localhost:8081/login', values);
+          const { success, role, LoginId /* id  */} = response.data;
+          if (success) {
+              sessionStorage.setItem('role', role);
+              sessionStorage.setItem('id', LoginId /* id */);
+              if (role === 'admin') {
+                  navigate('/adminDashboard');
+              } else if (role === 'employee') {
+                  navigate('/employeeDashboard');
               }
-            }
-            else {
-              alert("No record existed");
-            }
-        })
-        .catch(err => console.log(err))
-    }
+          } else {
+              alert('Invalid credentials');
+          }
+        } catch (error) {
+            console.error('Login error:', error);
+        }
+    };
+  
 
     // if( errors.email === "" && errors.password === "" && errors.role === "admin"){
     //   axios.post('http://localhost:8081/login', values)
@@ -65,7 +157,7 @@ function Login() {
     // }else{
     //   console.log("Error occured.")
     // }
-  }
+  
 
   return (
    
