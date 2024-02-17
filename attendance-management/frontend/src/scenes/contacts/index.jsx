@@ -1,17 +1,31 @@
 import { Box } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataContacts } from "../../data/mockData";
+// import { mockDataContacts } from "../../data/mockData";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
+import { useEffect, useState } from "react";
+import axios from 'axios';
 
 const Contacts = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const [contacts, setContacts] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:8081/api/employees') // Adjust the URL to match your backend endpoint
+      .then(response => {
+        setContacts(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching employee data:', error);
+      });
+  }, []);
+
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "registrarId", headerName: "Registrar ID" },
+    { field: "registrationId", headerName: "Registration ID" },
     {
       field: "name",
       headerName: "Name",
@@ -26,13 +40,23 @@ const Contacts = () => {
       align: "left",
     },
     {
-      field: "phone",
+      field: "phoneNo",
       headerName: "Phone Number",
       flex: 1,
     },
     {
       field: "email",
       headerName: "Email",
+      flex: 1,
+    },
+    {
+      field: "department",
+      headerName: "department",
+      flex: 1,
+    },
+    {
+      field: "designation",
+      headerName: "designation",
       flex: 1,
     },
     {
@@ -46,8 +70,8 @@ const Contacts = () => {
       flex: 1,
     },
     {
-      field: "zipCode",
-      headerName: "Zip Code",
+      field: "pin_code",
+      headerName: "Pin Code",
       flex: 1,
     },
   ];
@@ -90,11 +114,12 @@ const Contacts = () => {
           },
         }}
       >
-        <DataGrid
-          rows={mockDataContacts}
-          columns={columns}
-          components={{ Toolbar: GridToolbar }}
-        />
+       <DataGrid
+        rows={contacts} // Use the contacts state variable here
+        columns={columns}
+        components={{ Toolbar: GridToolbar }}
+      />
+
       </Box>
     </Box>
   );
